@@ -4,9 +4,9 @@ services:
   app:
     build: .
     container_name: fastapi-app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8008 --reload
     ports:
-      - "8000:8000"
+      - "8008:8008"
     environment:
       # AWS configuration for LocalStack
       - AWS_ACCESS_KEY_ID=test
@@ -15,7 +15,7 @@ services:
       - AWS_ENDPOINT_URL=http://localstack:4566
 
       # Your service environment variables
-      - S3_BUCKET=image-bucket
+      - S3_BUCKET=my-instagram-images
       - DYNAMO_TABLE=image_metadata
 
     depends_on:
@@ -24,6 +24,8 @@ services:
       - .:/app
     working_dir: /app
     restart: unless-stopped
+    networks:
+      - localstack-net
 
   localstack:
     image: localstack/localstack:latest
@@ -38,6 +40,12 @@ services:
       - "./init_localstack.sh:/etc/localstack/init/ready.d/init_localstack.sh"
       - "localstack_data:/var/lib/localstack"
     restart: unless-stopped
+    networks:
+      - localstack-net
 
 volumes:
   localstack_data:
+
+networks:
+  localstack-net:
+    driver: bridge

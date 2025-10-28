@@ -16,7 +16,7 @@ else
   echo "S3 bucket already exists: $BUCKET_NAME"
 fi
 
-TABLE_NAME="ImageMetadata"
+TABLE_NAME="image_metadata"
 EXISTING_TABLE=$(awslocal dynamodb list-tables --query "TableNames[]" --output text)
 
 if [[ "$EXISTING_TABLE" != *"$TABLE_NAME"* ]]; then
