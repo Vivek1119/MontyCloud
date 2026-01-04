@@ -18,8 +18,18 @@ class AWSService:
         self.s3_bucket = settings.S3_BUCKET
         self.dynamo_table = settings.DYNAMO_TABLE
 
-        self.s3_client = boto3.client("s3", region_name=self.region)
-        self.dynamo_resource = boto3.resource("dynamodb", region_name=self.region)
+        self.s3_client = boto3.client("s3",
+                                      region_name=self.region,
+                                      endpoint_url=settings.AWS_ENDPOINT_URL,
+                                      aws_access_key_id="test",
+                                      aws_secret_access_key="test",
+                                      )
+        self.dynamo_resource = boto3.resource("dynamodb",
+                                              region_name=self.region,
+                                              endpoint_url = settings.AWS_ENDPOINT_URL,
+                                              aws_access_key_id = "test",
+                                              aws_secret_access_key = "test"
+                                              )
         self.table = self.dynamo_resource.Table(self.dynamo_table)
 
 
@@ -32,7 +42,8 @@ class AWSService:
 
 
     def get_image_url(self, key: str) -> str:
-
+        if settings.AWS_ENDPOINT_URL:
+            return f"{settings.AWS_ENDPOINT_URL}/{self.s3_bucket}/{key}"
         return f"https://{self.s3_bucket}.s3.{self.region}.amazonaws.com/{key}"
 
 

@@ -103,9 +103,7 @@ async def get_image(
                 status_code=404,
                 detail="Image not found"
             )
-
-        presigned_url = aws_service.generate_presigned_url(metadata["s3_key"])
-
+        presigned_url = aws_service.generate_presigned_url(metadata["image_url"])
         return {
             "image_id": image_id,
             "user_id": metadata.get("user_id"),
